@@ -6,7 +6,7 @@ authors = [
     { name = "qe-present", email = "2664481691@qq.com" }
 ]
 dependencies = [
-    "fastapi>=0.116.1",
+    "fastapi[standard]>=0.125.0",
     "uvicorn>=0.35.0",
 ]
 readme = "README.md"
