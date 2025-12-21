@@ -10,3 +10,4 @@ wheels/
 .idea
 .idea/*
 .venv
+**/.env
