@@ -1,0 +1,29 @@
+GET {{baseUrl}}/books
+
+###
+POST {{baseUrl}}/books
+Content-Type: application/json
+
+{
+  "id": 7,
+  "title": "Echoes from the Void",
+  "author": "Dr. Samantha Rios",
+  "publisher": "MIT Press",
+  "publish_date": "2022-09-18",
+  "page_count": 298,
+  "language": "English"
+}
+
+###
+GET {{baseUrl}}/books/5
+
+###
+PATCH {{baseUrl}}/books/5
+Content-Type: application/json
+
+{
+  "author": "Dr. sdassdsa",
+  "page_count": 900
+}
+###
+DELETE {{baseUrl}}/books/6
