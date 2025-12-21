@@ -1,0 +1,135 @@
+openapi: 3.1.0
+info:
+  title: Book API
+  description: 图书管理 API
+  version: 1.0.0
+servers:
+  - url: 'http://127.0.0.1:8000'
+    description: 本地开发服务器
+
+paths:
+  /books:
+    get:
+      summary: 获取所有图书
+      tags: [books]
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Book'
+
+    post:
+      summary: 添加图书
+      tags: [books]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses:
+        '201':
+          description: 创建成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+
+  /books/{book_id}:
+    get:
+      summary: 获取单本图书
+      tags: [books]
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    patch:
+      summary: 更新图书
+      tags: [books]
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateBook'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      summary: 删除图书
+      tags: [books]
+      parameters:
+        - name: book_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 删除成功（无内容）
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  schemas:
+    Book:
+      type: object
+      required: [id, title, author, publisher, publish_date, page_count, language]
+      properties:
+        id: { type: integer, example: 1 }
+        title: { type: string, example: "The Great Gatsby" }
+        author: { type: string, example: "F. Scott Fitzgerald" }
+        publisher: { type: string, example: "Scribner" }
+        publish_date: { type: string, format: date, example: "1925-04-10" }
+        page_count: { type: integer, example: 218 }
+        language: { type: string, example: "English" }
+
+    UpdateBook:
+      type: object
+      properties:
+        title: { type: string, nullable: true }
+        author: { type: string, nullable: true }
+        publisher: { type: string, nullable: true }
+        page_count: { type: integer, nullable: true }
+        language: { type: string, nullable: true }
+
+  responses:
+    NotFound:
+      description: 资源未找到
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              detail:
+                type: string
+                example: "Book not found"
