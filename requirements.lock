@@ -92,6 +92,8 @@ pydantic-settings==2.12.0
     # via study-fastapi
 pygments==2.19.2
     # via rich
+pyjwt==2.10.1
+    # via study-fastapi
 python-dotenv==1.2.1
     # via pydantic-settings
     # via uvicorn

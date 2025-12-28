@@ -10,3 +10,14 @@ Accept: application/json
     "first_name":"111",
     "last_name":"111"
 }
+###
+POST {{baseUrl}}/auth/login
+
+{
+    "password": "123456",
+    "email": "2@qq.com"
+}
+###
+GET {{baseUrl}}/auth/test
+Authorization: Bearer {{access_token}}
+

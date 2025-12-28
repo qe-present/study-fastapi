@@ -1,9 +1,15 @@
+from datetime import timedelta
+
+from fastapi import HTTPException
 from sqlmodel import select
 
 from sqlmodel.ext.asyncio.session import AsyncSession
+
+from fastapi.responses import JSONResponse
+from fastapi import status
 from .models import User
-from .schemas import User as UserSchema
-from .utils import hash_password
+from .schemas import User as UserSchema, Login
+from .utils import hash_password, create_access, decode_token, verify_password
 
 
 class UserService:
@@ -25,3 +31,22 @@ class UserService:
         session.add(new_user)
         await session.commit()
         return new_user
+
+    async def login_user(self, user_data: Login, session: AsyncSession):
+        user = await self.get_user_by_email(user_data.email, session)
+        is_verify = verify_password(user_data.password, user.password_hash)
+        if not is_verify:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail="Invalid credentials")
+        access_token = create_access({"email": user.email, 'uid': str(user.uid)})
+        refresh_token = create_access(
+            {"email": user.email, 'uid': str(user.uid)},
+            expiry=timedelta(days=1),
+            refresh=True
+        )
+        return JSONResponse(
+            content={
+                "message": "Login successful",
+                "access_token": access_token,
+                "refresh_token": refresh_token
+            }
+        )

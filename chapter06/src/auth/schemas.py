@@ -21,3 +21,7 @@ class Register(BaseModel):
     password_hash: str = Field(exclude=True)
     created_at: datetime
     updated_at: datetime
+
+class Login(BaseModel):
+    email: str
+    password: str

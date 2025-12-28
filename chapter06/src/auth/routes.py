@@ -2,12 +2,13 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi import status
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from .schemas import User, Register
+from .schemas import User, Register, Login
 from .service import UserService
 from ..db.main import get_session
-
+from .dependencies import JWTBearer
 router = APIRouter(prefix='/auth', tags=['auth'])
 service = UserService()
+bearer = JWTBearer()
 
 
 @router.post(
@@ -30,5 +31,14 @@ async def register(
     '/login',
     status_code=status.HTTP_200_OK
 )
-async def login():
-    return {"message": "Login successful"}
+async def login(user: Login,
+                session: AsyncSession = Depends(get_session)
+                ):
+    ok=await service.user_exists(user.email, session)
+    if not ok:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User Not Found')
+    return await service.login_user(user, session)
+
+@router.get('/test')
+async def test(user_detail=Depends(bearer)):
+    pass
