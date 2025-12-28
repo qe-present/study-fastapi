@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
+from .src.book import book_router
 from .src.db.main import init_db
 @asynccontextmanager
 async def life_span(app: FastAPI):
@@ -14,3 +15,4 @@ app = FastAPI(
     title="Bookly",
     lifespan=life_span,
 )
+app.include_router(book_router)

@@ -10,4 +10,4 @@ wheels/
 .idea
 .idea/*
 .venv
-**/.env
+chapter04/.env

@@ -1,0 +1,29 @@
+GET {{baseUrl}}/books
+
+###
+POST {{baseUrl}}/books
+Content-Type: application/json
+
+{
+   "title": "The Shadow of Yesterday",
+    "author": "Eleanor Whitmore",
+    "publisher": "Penguin Random House",
+    "publish_date": "2019-08-15",
+    "page_count": 342,
+    "language": "English"
+}
+
+###
+GET {{baseUrl}}/books/66469873-d072-4f53-bc14-38420e050a71
+
+###
+PATCH {{baseUrl}}/books/66469873-d072-4f53-bc14-38420e050a71
+Content-Type: application/json
+
+{
+  "author": "Dr. sdassdsa",
+  "page_count": 900
+}
+
+###
+DELETE {{baseUrl}}/books/66469873-d072-4f53-bc14-38420e050a71

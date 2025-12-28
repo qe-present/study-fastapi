@@ -1,0 +1,24 @@
+# @no-cookie-jar
+
+GET {{baseUrl}}/
+Accept: application/json
+### Greet1
+GET {{baseUrl}}/greet1/join
+### Greet2
+GET {{baseUrl}}/greet/?name=11&age=30
+### create_book
+< {%
+   const names = ["Alice", "Bob", "Charlie", "Diana", "Eve"];
+   const randomName = names[Math.floor(Math.random() * names.length)];
+   client.global.set("username", randomName);
+%}
+POST {{baseUrl}}/create_book
+Content-Type: Application/json
+
+{
+  "title": "The Great Gatsby",
+  "author": "{{username}}"
+}
+### get_header
+GET {{baseUrl}}/get_header
+Content-Type: application/json

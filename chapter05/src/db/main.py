@@ -1,28 +1,34 @@
 from typing import AsyncGenerator
-from sqlalchemy.ext.asyncio import create_async_engine
-from sqlalchemy.orm import sessionmaker  # ✅ 从 sqlalchemy.orm 导入
-from sqlmodel.ext.asyncio.session import AsyncSession  # ✅ SQLModel 的 Session
+from sqlalchemy.ext.asyncio import (
+    create_async_engine,
+    AsyncSession,
+    async_sessionmaker,
+)
 from sqlmodel import SQLModel
 from chapter04.config import settings
 
+# 创建异步引擎
 engine = create_async_engine(
     url=settings.DATABASE_URL,
     echo=True,
 )
 
-# ✅ sessionmaker 是工厂，class_ 指定 SQLModel 的 AsyncSession
-async_session_maker = sessionmaker(
+# 创建异步 sessionmaker
+async_session_maker = async_sessionmaker(
     bind=engine,
     class_=AsyncSession,
     expire_on_commit=False,
 )
 
+# 初始化数据库
 async def init_db():
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
 
+# FastAPI 依赖
 async def get_session() -> AsyncGenerator[AsyncSession, None]:
-    async with async_session_maker() as session:  # ✅ 正确：工厂创建 Session
+    """FastAPI 依赖注入，自动管理会话生命周期"""
+    async with async_session_maker() as session:
         try:
             yield session
         except Exception:
