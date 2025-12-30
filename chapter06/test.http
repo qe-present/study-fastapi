@@ -21,3 +21,6 @@ POST {{baseUrl}}/auth/login
 GET {{baseUrl}}/auth/test
 Authorization: Bearer {{access_token}}
 
+###
+GET {{baseUrl}}/auth/refresh
+Authorization: Bearer {{refresh_token}}

@@ -50,3 +50,14 @@ class UserService:
                 "refresh_token": refresh_token
             }
         )
+    async def refresh_token(self,user_data:dict):
+        new_token = create_access(
+            {"email": user_data['email'], 'uid': user_data['uid']},
+            expiry=timedelta(seconds=3600),
+            refresh=False
+        )
+        return JSONResponse(
+            content={
+                "access_token": new_token
+            }
+        )

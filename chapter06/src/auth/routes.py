@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi import status
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -5,10 +7,11 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from .schemas import User, Register, Login
 from .service import UserService
 from ..db.main import get_session
-from .dependencies import JWTBearer
+from .dependencies import JWTVerifyBearer,JWTRefreshBearer
+
 router = APIRouter(prefix='/auth', tags=['auth'])
 service = UserService()
-bearer = JWTBearer()
+bearer = JWTVerifyBearer()
 
 
 @router.post(
@@ -38,7 +41,11 @@ async def login(user: Login,
     if not ok:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User Not Found')
     return await service.login_user(user, session)
-
+@router.get('/refresh')
+async def refresh(token=Depends(JWTRefreshBearer())):
+    if datetime.fromtimestamp(token['exp']) > datetime.now():
+        return await service.refresh_token(token['user'])
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='Invalid token')
 @router.get('/test')
 async def test(user_detail=Depends(bearer)):
     pass
